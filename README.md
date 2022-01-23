@@ -11,7 +11,7 @@
 
 ## 下载&&运行
 
-点击
+点击[下载链接](https://github.com/binkzhou/vue3_serial/releases)
 
 ## 界面预览
 
