@@ -1,0 +1,28 @@
+@font-face {
+	font-family: 'iconfont'; /* Project id 2546196 */
+	src: url('./font.ttf') format('truetype');
+}
+
+.iconfont {
+	font-family: 'iconfont' !important;
+	font-size: 16px;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zuixiaohua:before {
+	content: '\e650';
+}
+
+.icon-github:before {
+	content: '\e645';
+}
+
+.icon-Close:before {
+	content: '\e689';
+}
+
+.icon-window-maximize:before {
+	content: '\e679';
+}
