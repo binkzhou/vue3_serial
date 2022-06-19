@@ -1,7 +1,7 @@
 <template>
 	<div class="desktop-app-title-bar">
 		<div class="desktop-app-title-bar-left">
-			<i class="iconfont icon-github"></i>
+			<!-- <i class="iconfont icon-github"></i> -->
 		</div>
 		<div class="desktop-app-title-bar-right">
 			<button id="minimize" @click="onMinimize">
@@ -53,38 +53,45 @@ i {
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	background: #24292e;
-	height: 28px;
+	padding-right: 5px;
+	background: #FAFAFA;
+	height: 38px;
 	-webkit-app-region: drag;
+	border-bottom: 1px solid #E8EBF0;
 }
 
 .icon-github {
-	background: #d1d5da;
+	background: #FAFAFA;
 	border-radius: 50%;
 	margin: 0 10px;
 }
 
 .desktop-app-title-bar-right button {
-	width: 45px;
-	height: 28px;
-	background: #24292e;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	width: 26px;
+	height: 26px;
+	background: #FAFAFA;
+	border-radius: 4px;
 	border: 0;
 	outline: none;
 }
 
 .desktop-app-title-bar-right button .iconfont {
 	font-size: 10px;
-	color: #a0a0a0;
+	color: #5C5C5D;
 }
 #close:hover {
-	background: #e90f25;
+	background: #E81123;
 }
-.desktop-app-title-bar-right button:hover .iconfont {
-	color: #fff;
+#close:hover i{
+color: white;
 }
 
 #maximize:hover,
 #minimize:hover {
-	background: #878787;
+	background: #E6E7E7;
+	color: black;
 }
 </style>

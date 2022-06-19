@@ -11,9 +11,9 @@ let win;
 async function createWindow() {
 	// Create the browser window.
 	win = new BrowserWindow({
-		width: 800,
+		width: 900,
 		height: 580,
-		minWidth: 800,
+		minWidth: 900,
 		minHeight: 580,
 		useContentSize: false,
 		frame: false,
@@ -36,7 +36,7 @@ async function createWindow() {
 		win.loadURL('app://./index.html');
 	}
 
-	win.on('ready-to-show', function() {
+	win.on('ready-to-show', function () {
 		win.show(); // 初始化后再显示
 	});
 }
@@ -91,15 +91,15 @@ app.on('window-all-closed', () => {
 		app.quit();
 	}
 });
-ipcMain.on('window-close', function() {
+ipcMain.on('window-close', function () {
 	win.close();
 });
 
-ipcMain.on('window-min', function() {
+ipcMain.on('window-min', function () {
 	win.minimize();
 });
 
-ipcMain.on('window-max', function() {
+ipcMain.on('window-max', function () {
 	if (win.isMaximized()) {
 		win.unmaximize();
 	} else {

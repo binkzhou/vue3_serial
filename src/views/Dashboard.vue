@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<Header />
+	<div class="com_container">
+		<!-- <Header /> -->
 		<div class="home_c">
 			<div class="home_left">
 				<div>
@@ -48,11 +48,12 @@
 			</div>
 			<div class="home_right">
 				<div class="home_text" ref="scrollRef">
-					<div v-for="(item, index) in msg" :key="index" :class="item.chat === 'roboto' ? 'left_msg' : 'right_msg'">
-						<a-avatar shape="square" size="small" :src="robots">
+					<div v-for="(item, index) in msg" :key="index" :class="item.chat === 'roboto' ? 'left_msg' : 'left_msg'">
+						<!-- <a-avatar shape="square" size="small" :src="robots">
 							R
-						</a-avatar>
-						<div class="msgContent">{{ item.content }}</div>
+						</a-avatar> -->
+						<div class="msgContent">{{item.chat === 'roboto' ? '收' : '发'}}→{{ item.content }}</div>
+						<!-- {{ item.content }} -->
 					</div>
 				</div>
 			</div>
@@ -79,10 +80,10 @@
 </template>
 <script setup>
 import { onBeforeMount, ref, getCurrentInstance, watch, nextTick } from 'vue';
-import Header from '@/components/Header';
+// import Header from '@/components/Header';
 import serialport from 'serialport';
 import serialConfig from '@/config';
-import robots from '@/assets/robots.png';
+// import robots from '@/assets/robots.png';
 const currentInstance = getCurrentInstance();
 const { $message } = currentInstance.appContext.config.globalProperties;
 
@@ -109,6 +110,7 @@ let hexSend = false;
 onBeforeMount(() => {
 	setInterval(() => {
 		serialport.list().then(list => {
+			console.log(list);
 			ports.value = list;
 		});
 	}, 2000);
@@ -247,6 +249,9 @@ watch(
 );
 </script>
 <style>
+.com_container{
+	flex: 1;
+}
 .home_c {
 	display: flex;
 	margin: 10px;
@@ -256,7 +261,7 @@ watch(
 	width: 240px;
 	padding-bottom: 20px;
 	box-sizing: border-box;
-	border: 1px solid #ccc;
+	border: 1px solid #EDEDED;
 	user-select: none;
 }
 
@@ -286,7 +291,7 @@ watch(
 .home_text {
 	flex: 1;
 	margin-left: 10px;
-	border: 1px solid #ccc;
+	border: 1px solid #EDEDED;
 }
 .home_send {
 	flex: 1;
@@ -332,14 +337,16 @@ watch(
 	min-width: 38px;
 	min-height: 38px;
 	margin-left: 10px;
+	word-break: break-word;
 	padding: 5px 8px;
 	border-radius: 5px;
-	background-color: #5a64c1;
+	/* background-color: #348dfe; */
+	border: 1px solid #EDEDED;
 	width: auto;
-	max-width: 500px;
-	font-size: 18px;
+	max-width: 490px;
+	font-size: 14px;
 	letter-spacing: 0px;
-	color: #e9e9e9;
+	color: black;
 }
 .right_msg .msgContent {
 	position: relative;
@@ -355,17 +362,6 @@ watch(
 	font-weight: normal;
 	color: #e9e9e9;
 }
-.left_msg .msgContent::before {
-	content: '';
-	position: absolute;
-	width: 0;
-	height: 0;
-	left: -5px;
-	top: 14px;
-	border-style: solid;
-	border-width: 5px 5px 5px 0;
-	border-color: transparent #5a64c1 transparent transparent;
-}
 .right_msg .msgContent::before {
 	content: '';
 	position: absolute;
@@ -375,7 +371,7 @@ watch(
 	top: 14px;
 	border-style: solid;
 	border-width: 5px 0 5px 5px;
-	border-color: transparent transparent transparent #5a64c1;
+	border-color: transparent transparent transparent #5fc5f5;
 }
 .home_b {
 	display: flex;
@@ -384,12 +380,40 @@ watch(
 .home_sendConfig {
 	width: 240px;
 	padding: 10px;
-	border: 1px solid #ccc;
+	border: 1px solid #EDEDED;
 	user-select: none;
 }
 .home_btn {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+}
+
+::-webkit-scrollbar {
+    z-index: 50;
+    width: 7px;
+    height: 3px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    transition: all .2s;
+    height: 20px;
+}
+:hover::-webkit-scrollbar-thumb {
+    transition: all .2s;
+}
+::-webkit-scrollbar-button {
+    display: none;
+}
+::-webkit-scrollbar-corner {
+    display: none;
 }
 </style>
