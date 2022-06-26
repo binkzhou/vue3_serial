@@ -52,7 +52,7 @@
 						<!-- <a-avatar shape="square" size="small" :src="robots">
 							R
 						</a-avatar> -->
-						<div class="msgContent">{{item.chat === 'roboto' ? '收' : '发'}}→{{ item.content }}</div>
+						<div class="msgContent">{{ item.chat === 'roboto' ? '收' : '发' }}→{{ item.content }}</div>
 						<!-- {{ item.content }} -->
 					</div>
 				</div>
@@ -158,7 +158,7 @@ const handleSetInterval = value => {
 const handleSwitch = checked => {
 	if (checked) {
 		COM = new serialport(port.value, option, false);
-		COM.on('error', function() {
+		COM.on('error', function () {
 			$message.error('端口已经被占用');
 			open.value = false;
 		});
@@ -248,8 +248,8 @@ watch(
 	}
 );
 </script>
-<style>
-.com_container{
+<style scoped>
+.com_container {
 	flex: 1;
 }
 .home_c {
@@ -261,7 +261,7 @@ watch(
 	width: 240px;
 	padding-bottom: 20px;
 	box-sizing: border-box;
-	border: 1px solid #EDEDED;
+	border: 1px solid #ededed;
 	user-select: none;
 }
 
@@ -291,7 +291,7 @@ watch(
 .home_text {
 	flex: 1;
 	margin-left: 10px;
-	border: 1px solid #EDEDED;
+	border: 1px solid #ededed;
 }
 .home_send {
 	flex: 1;
@@ -341,7 +341,7 @@ watch(
 	padding: 5px 8px;
 	border-radius: 5px;
 	/* background-color: #348dfe; */
-	border: 1px solid #EDEDED;
+	border: 1px solid #ededed;
 	width: auto;
 	max-width: 490px;
 	font-size: 14px;
@@ -380,7 +380,7 @@ watch(
 .home_sendConfig {
 	width: 240px;
 	padding: 10px;
-	border: 1px solid #EDEDED;
+	border: 1px solid #ededed;
 	user-select: none;
 }
 .home_btn {
@@ -390,30 +390,30 @@ watch(
 }
 
 ::-webkit-scrollbar {
-    z-index: 50;
-    width: 7px;
-    height: 3px;
+	z-index: 50;
+	width: 7px;
+	height: 3px;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0);
+	background-color: rgba(0, 0, 0, 0);
 }
 
 ::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.1);
-    transition: all .2s;
-    height: 20px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.1);
+	transition: all 0.2s;
+	height: 20px;
 }
 :hover::-webkit-scrollbar-thumb {
-    transition: all .2s;
+	transition: all 0.2s;
 }
 ::-webkit-scrollbar-button {
-    display: none;
+	display: none;
 }
 ::-webkit-scrollbar-corner {
-    display: none;
+	display: none;
 }
 </style>

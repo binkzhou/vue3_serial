@@ -1,7 +1,7 @@
 <template>
-	<div style="display:flex;">
+	<div class="app_container">
 		<Side />
-		<div style="flex:1">
+		<div class="app_center">
 			<Header />
 			<router-view />
 		</div>
@@ -12,3 +12,15 @@
 import Header from '@/components/Header';
 import Side from '@/components/Side';
 </script>
+
+<style lang="css" scoped>
+.app_container {
+	display: flex;
+	overflow: hidden;
+}
+.app_center {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+</style>
