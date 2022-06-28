@@ -1,38 +1,55 @@
 <template>
-	<ul class="ipAdress">
+	<ul class="ipAdress" :class="{ ipAdress_disable: disabled, ipAdress_focus: focus }">
 		<li v-for="(item, index) in ipAddress" :key="index">
-			<input ref="ipInput" v-model="item.value" type="text" class="ipInputClass" @input="checkIpVal(item)" @keyup="turnIpPosition(item, index, $event)" />
+			<input
+				ref="ipInput"
+				:disabled="disabled"
+				:class="{ ipInputClass_disable: disabled }"
+				v-model="item.value"
+				type="text"
+				class="ipInputClass"
+				@input="checkIpVal(item)"
+				@keyup="turnIpPosition(item, index, $event)"
+				@focus="handleFocus"
+				@blur="handleFocus"
+			/>
 			<div></div>
 		</li>
 	</ul>
 </template>
 
 <script setup>
-import { reactive, ref, watch, defineEmits, defineProps, onMounted } from 'vue';
+import { reactive, ref, watch, defineEmits, defineProps, onMounted, toRefs } from 'vue';
 
 const ipAddress = reactive([{ value: '' }, { value: '' }, { value: '' }, { value: '' }]);
 
 // ip 输入框ref
 const ipInput = ref(null);
 // 定义emit
-const emit = defineEmits([]);
+const emit = defineEmits(['myChange']);
+// 是否获得了焦点
+const focus = ref(false);
 
 const props = defineProps({
-	text: String
+	text: String,
+	disabled: Boolean
 });
-console.log('props', props.text);
+
+const { disabled } = toRefs(props);
+console.log('props', props);
 console.log(emit);
 
 onMounted(() => {
 	if (props.text === '') {
 		return;
 	}
-
+	console.log('props.text', props.text);
 	let ipList = props.text.split('.');
 	ipAddress[0].value = ipList[0] || '';
 	ipAddress[1].value = ipList[1] || '';
 	ipAddress[2].value = ipList[2] || '';
 	ipAddress[3].value = ipList[3] || '';
+	console.log('ipAddress', ipAddress);
 });
 
 // 格式化补零方法
@@ -61,9 +78,9 @@ watch(
 		}
 		console.log('str', str);
 		// console.log('emit', emit);
-		emit('change', ipAddress.map(item => item.value + '').join('.'));
+		emit('myChange', ipAddress.map(item => item.value + '').join('.'));
 	},
-	{ immediate: true, deep: true }
+	{ immediate: false, deep: true }
 );
 
 // 检查ip输入为0-255
@@ -112,6 +129,16 @@ const turnIpPosition = (item, index, event) => {
 		}
 	}
 };
+
+const handleFocus = () => {
+	let isFocus = false;
+	ipInput.value.map(item => {
+		if (item === document.activeElement) {
+			isFocus = true;
+		}
+	});
+	focus.value = isFocus;
+};
 </script>
 <style lang="css" scoped>
 .ipAdress {
@@ -121,6 +148,13 @@ const turnIpPosition = (item, index, event) => {
 	margin-bottom: 0;
 	height: 32px;
 	border: 1px solid #dcdfe6;
+	transition: all 0.3s;
+	border-radius: 2px;
+}
+.ipAdress_disable {
+	background-color: #f5f5f5;
+	border-color: #d9d9d9 !important;
+	cursor: not-allowed;
 }
 .ipAdress:hover {
 	border-color: #40a9ff;
@@ -140,6 +174,15 @@ const turnIpPosition = (item, index, event) => {
 	height: 32px;
 	text-align: center;
 	background: transparent;
+}
+.ipInputClass_disable {
+	cursor: not-allowed;
+	user-select: none;
+	color: rgba(0, 0, 0, 0.25);
+}
+.ipAdress_focus {
+	border-color: #40a9ff;
+	box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 .ipAdress li div {
 	position: absolute;

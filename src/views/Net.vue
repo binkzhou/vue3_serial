@@ -10,12 +10,12 @@
 				</div>
 				<div>
 					<span>IP地址</span>
-					<IPAddress @change="changeValue" :text="ip" />
+					<IPAddress @myChange="changeValue" :text="ip" :disabled="open" />
 					<!-- <a-input-number id="inputNumber" :min="1" :max="255" /> -->
 				</div>
 				<div>
 					<span>端口号</span>
-					<a-input-number v-model:value="port" :min="0" :max="99999" />
+					<a-input-number v-model:value="port" :disabled="open" :min="0" :max="99999" />
 				</div>
 				<div>
 					<span>开/关</span>
@@ -39,17 +39,27 @@
 			</div>
 		</div>
 		<div class="net_b">
-			<div class="net_text" ref="scrollRef" :style="`height: calc(100vh - ${!open ? 144 : 187}px);`">
+			<div class="net_text" ref="scrollRef" :style="`height: calc(100vh - ${open && protocol !== 'TCP_CLIENT' ? 187 : 144}px);`">
 				<div v-for="(item, index) in msg" :key="index" :class="item.chat === 'roboto' ? 'left_msg' : 'left_msg'">
 					<div class="msgContent">{{ item.chat === 'roboto' ? '收' : '发' }}→{{ item.content }}</div>
 				</div>
 			</div>
 			<div class="net_send">
-				<div class="net_connectTag" v-if="open">
+				<div class="net_connectTag" v-if="open && protocol === 'TCP_SERVER'">
 					<span>连接的客户端</span>
 					<a-select class="net_input" style="width: 200px" :dropdownMatchSelectWidth="200" @change="handleChangeClient" :value="client">
 						<a-select-option v-for="(item, index) in connects" :key="index" :value="item.id">{{ item.content }}</a-select-option>
 					</a-select>
+				</div>
+				<div class="net_udpConnectTag" v-if="open && protocol === 'UDP'">
+					<div>
+						<span>目标主机</span>
+						<IPAddress :text="targetIp" @myChange="changeTargetIp" />
+					</div>
+					<div>
+						<span>目标端口</span>
+						<a-input-number v-model:value="targetPort" :min="0" :max="99999" />
+					</div>
 				</div>
 				<div class="net_sendMsg">
 					<a-textarea class="net_send_input" placeholder="请输入要发送的信息" @change="handleSendValue" allowClear autoSize />
@@ -67,6 +77,7 @@ import { getCurrentInstance, ref, toRaw } from 'vue';
 import IPAddress from '@/components/IPAddress';
 import net from 'net';
 import os from 'os';
+import dgram from 'dgram';
 const currentInstance = getCurrentInstance();
 const { $message } = currentInstance.appContext.config.globalProperties;
 console.log('toRaw', toRaw);
@@ -74,7 +85,7 @@ console.log('toRaw', toRaw);
 const protocolTypes = [
 	{ id: 'TCP_SERVER', content: 'TCP 服务器' },
 	{ id: 'TCP_CLIENT', content: 'TCP 客户端' },
-	{ id: 'UDP', content: 'UDP 客户端' }
+	{ id: 'UDP', content: 'UDP' }
 ];
 
 // 当前协议
@@ -83,6 +94,11 @@ const protocol = ref('TCP_SERVER');
 const ip = ref(getIpAddress());
 // 端口
 const port = ref(3000);
+
+// 目标ip
+const targetIp = ref(getIpAddress());
+// 目标端口
+const targetPort = ref(8080);
 // 开关状态
 const open = ref(false);
 // 消息
@@ -123,7 +139,12 @@ function getIpAddress() {
 }
 
 const changeValue = value => {
-	console.log('value', value);
+	console.log('value@@@', value);
+	ip.value = value;
+};
+
+const changeTargetIp = value => {
+	targetIp.value = value;
 };
 
 const handleChangeClient = value => {
@@ -131,6 +152,12 @@ const handleChangeClient = value => {
 };
 //创建服务器
 const tcpServer = net.createServer();
+// tcp客户端
+let tcpClient = null;
+// udp服务器
+let udpServer = dgram.createSocket('udp4');
+// udp客户端
+const updClient = dgram.createSocket('udp4');
 tcpServer.on('connection', socket => {
 	console.log('connect====>');
 	sockets.value.push(socket);
@@ -200,35 +227,131 @@ const handleSendValue = e => {
 	sendMsg.value = e.currentTarget.value;
 };
 
+/**
+ * tcp serve send
+ */
+const handleTcpServerSendMsg = () => {
+	if (client.value === 'all') {
+		sockets.value.forEach(function (socket) {
+			console.log('socket', socket);
+			toRaw(socket).write(sendMsg.value);
+		});
+		return;
+	}
+
+	connects.value.forEach(item => {
+		if (item.id === client.value) {
+			toRaw(item.socket).write(sendMsg.value);
+		}
+	});
+};
+
+/**
+ * tcp client send
+ */
+const handleTcpClientSendMsg = () => {
+	tcpClient && tcpClient.write(sendMsg.value);
+};
+
+/**
+ * udp client send
+ */
+const handleUpdClientSendMsg = () => {
+	console.log('updClient', updClient);
+	udpServer && udpServer.send(sendMsg.value, 0, sendMsg.value.length, targetPort.value, targetIp.value);
+};
+
 // 发送消息
 const handleSendMsg = () => {
-	if (open.value) {
-		msg.value.push({ chat: 'me', content: sendMsg.value });
-		console.log('client.value', client.value);
-		if (client.value === 'all') {
-			sockets.value.forEach(function (socket) {
-				console.log('socket', socket);
-				toRaw(socket).write(sendMsg.value);
-			});
-			return;
-		}
+	msg.value.push({ chat: 'me', content: sendMsg.value });
+	if (protocol.value === 'TCP_SERVER') {
+		handleTcpServerSendMsg();
+	}
 
-		connects.value.forEach(item => {
-			if (item.id === client.value) {
-				toRaw(item.socket).write(sendMsg.value);
-			}
-		});
+	if (protocol.value === 'TCP_CLIENT') {
+		handleTcpClientSendMsg();
+	}
+	if (protocol.value === 'UDP') {
+		handleUpdClientSendMsg();
 	}
 };
+
 /**
- * 切换开关状态
+ * tcp 服务器处理
  */
-const handleSwitch = checked => {
-	console.log('checked', checked);
+const handleTcpServer = checked => {
 	if (checked) {
 		createTCPServer();
 	} else {
 		closeServer();
+	}
+};
+
+/**
+ * tcp 客户端
+ */
+const handleTcpClient = checked => {
+	if (checked) {
+		tcpClient = net.connect(
+			{
+				host: ip.value,
+				port: port.value
+			},
+			function () {
+				console.log('tcp 客户端启动');
+			}
+		);
+		tcpClient.on('data', function (data) {
+			console.log('data', data);
+			msg.value.push({ chat: 'roboto', content: data.toString() });
+			scrollRef.value.scrollTop = scrollRef.value.scrollHeight;
+		});
+	} else {
+		tcpClient && tcpClient.end();
+	}
+};
+
+/**
+ * upd 客户端
+ */
+const handleUdpClient = checked => {
+	if (checked) {
+		console.log('udpServer', udpServer);
+		udpServer = dgram.createSocket('udp4');
+		udpServer && udpServer.bind(port.value, ip.value);
+		udpServer.on('message', (m, y) => {
+			msg.value.push({ chat: 'roboto', content: m.toString() });
+			console.log(y);
+		});
+		udpServer.on('error', err => {
+			open.value = false;
+			console.log(err.message);
+			$message.error(err.message.split(':')[1]);
+			console.log(err.message.split(':')[1]);
+		});
+	} else {
+		// udpServer.close();
+		udpServer &&
+			udpServer.close(() => {
+				console.log('已关闭');
+			});
+		udpServer.unref();
+	}
+};
+
+/**
+ * 切换开关状态
+ */
+const handleSwitch = checked => {
+	if (protocol.value === 'TCP_SERVER') {
+		handleTcpServer(checked);
+	}
+
+	if (protocol.value === 'TCP_CLIENT') {
+		handleTcpClient(checked);
+	}
+	if (protocol.value === 'UDP') {
+		handleUdpClient(checked);
 	}
 };
 </script>
@@ -297,6 +420,18 @@ const handleSwitch = checked => {
 	margin-left: 10px;
 }
 .net_connectTag span {
+	margin-right: 10px;
+}
+.net_udpConnectTag {
+	display: flex;
+	align-items: center;
+	padding-left: 10px;
+	height: 43px;
+}
+.net_udpConnectTag > div {
+	margin-right: 10px;
+}
+.net_udpConnectTag span {
 	margin-right: 10px;
 }
 .net_send_input {
