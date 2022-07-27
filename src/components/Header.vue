@@ -54,14 +54,14 @@ i {
 	align-items: center;
 	width: 100%;
 	padding-right: 5px;
-	background: #FAFAFA;
+	background: #fafafa;
 	height: 38px;
 	-webkit-app-region: drag;
-	border-bottom: 1px solid #E8EBF0;
+	border-bottom: 1px solid #e8ebf0;
 }
 
 .icon-github {
-	background: #FAFAFA;
+	background: #fafafa;
 	border-radius: 50%;
 	margin: 0 10px;
 }
@@ -72,7 +72,7 @@ i {
 	align-items: center;
 	width: 26px;
 	height: 26px;
-	background: #FAFAFA;
+	background: #fafafa;
 	border-radius: 4px;
 	border: 0;
 	outline: none;
@@ -80,18 +80,18 @@ i {
 
 .desktop-app-title-bar-right button .iconfont {
 	font-size: 10px;
-	color: #5C5C5D;
+	color: #5c5c5d;
 }
 #close:hover {
-	background: #E81123;
+	background: #e81123;
 }
-#close:hover i{
-color: white;
+#close:hover i {
+	color: white;
 }
 
 #maximize:hover,
 #minimize:hover {
-	background: #E6E7E7;
+	background: #e6e7e7;
 	color: black;
 }
 </style>

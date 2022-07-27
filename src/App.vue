@@ -1,7 +1,7 @@
 <template>
 	<div class="app_container">
 		<Side />
-		<div class="app_center">
+		<div class="app_center ant_center">
 			<Header />
 			<router-view />
 		</div>
@@ -11,6 +11,13 @@
 <script setup>
 import Header from '@/components/Header';
 import Side from '@/components/Side';
+const color = window.localStorage.getItem('primary-color');
+
+if (color) {
+	window.less.modifyVars({
+		'primary-color': color
+	});
+}
 </script>
 
 <style lang="css" scoped>

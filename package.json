@@ -6,15 +6,18 @@
 	"scripts": {
 		"lint": "vue-cli-service lint",
 		"build": "vue-cli-service electron:build",
-		"serve": "vue-cli-service electron:serve",
+		"serve": "node src/theme/js/theme.js && vue-cli-service electron:serve",
 		"postinstall": "electron-rebuild;electron-builder install-app-deps",
 		"postuninstall": "electron-builder install-app-deps"
 	},
 	"dependencies": {
 		"ant-design-vue": "^2.2.8",
+		"antd-theme-generator": "^1.2.11",
 		"core-js": "^3.6.5",
 		"electron": "12",
 		"iconv-lite": "^0.6.3",
+		"less": "2.7.3",
+		"less-loader": "7.3.0",
 		"serialport": "^9.2.0",
 		"vue": "^3.2.6",
 		"vue-router": "^4.0.12"

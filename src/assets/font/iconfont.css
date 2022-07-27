@@ -13,26 +13,31 @@
 }
 
 .icon-wangluo:before {
-  content: "\e617";
+	content: '\e617';
 }
 
 .icon-jiekou:before {
-  content: "\e638";
+	content: '\e638';
 }
 
 .icon-zuixiaohua:before {
-  content: "\e650";
+	content: '\e650';
 }
 
 .icon-github:before {
-  content: "\e645";
+	content: '\e645';
 }
 
 .icon-Close:before {
-  content: "\e689";
+	content: '\e689';
 }
 
 .icon-window-maximize:before {
-  content: "\e679";
+	content: '\e679';
 }
-
+.icon-shezhi:before {
+	content: '\e64b';
+}
+.icon-duihao:before {
+	content: '\eaf1';
+}
